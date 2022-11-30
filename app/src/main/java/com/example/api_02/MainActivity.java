@@ -202,9 +202,48 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
     }
+    //Runtime permission control methods
+    private boolean checkPermission() {
+
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED && hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED   ) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setDefaultLocation() {
+
+        //Default location, Seoul, South Korea
+        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
+        String markerTitle = "Unable to bring location";
+        String markerSnippet = "Check GPS and location permission";
 
 
+        if (currentMarker != null) currentMarker.remove();
 
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(DEFAULT_LOCATION);
+        markerOptions.title(markerTitle);
+        markerOptions.snippet(markerSnippet);
+        markerOptions.draggable(true);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        currentMarker = mapScreen.addMarker(markerOptions);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
+        mapScreen.moveCamera(cameraUpdate);
+
+    }
+
+    //Check if the location service is on or not
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
 
     public String getCurrentAddress(LatLng latlng) {
         //Change GPS to geocoder
@@ -233,16 +272,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
-    //Check if the location service is on or not
-    public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-
     //Set current Location
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
 
@@ -266,45 +295,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapScreen.moveCamera(cameraUpdate);
 
     }
-
-
-    public void setDefaultLocation() {
-
-        //Default location, Seoul, South Korea
-        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
-        String markerTitle = "Unable to bring location";
-        String markerSnippet = "Check GPS and location permission";
-
-
-        if (currentMarker != null) currentMarker.remove();
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(DEFAULT_LOCATION);
-        markerOptions.title(markerTitle);
-        markerOptions.snippet(markerSnippet);
-        markerOptions.draggable(true);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        currentMarker = mapScreen.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
-        mapScreen.moveCamera(cameraUpdate);
-
-    }
-
-
-    //Runtime permission control methods
-    private boolean checkPermission() {
-
-        int hasFineLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-
-        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED && hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED   ) {
-            return true;
-        }
-        return false;
-    }
-
-
 
     //Get response using ActivityCompat.requestPermissions
 
