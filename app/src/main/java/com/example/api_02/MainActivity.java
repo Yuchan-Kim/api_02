@@ -328,9 +328,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Allowed location, update location
                 startLocationUpdates();
             } else {
-                // If
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0]) || ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
-                    // 사용자가 거부만 선택한 경우에는 앱을 다시 실행하여 허용을 선택하면 앱을 사용할 수 있습니다.
+                    // Only user rejected, rerun the app and select allow to run the app
                     Snackbar.make(mainLayout, "Permission rejected, Please restart the app ", Snackbar.LENGTH_INDEFINITE).setAction("확인", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -338,8 +337,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }).show();
                 } else {
-                    // "다시 묻지 않음"을 사용자가 체크하고 거부를 선택한 경우에는 설정(앱 정보)에서 퍼미션을 허용해야 앱을 사용할 수 있습니다.
-                    // "
+                    // "Don't ask again" --> Go to setting app for device and change manually
                     Snackbar.make(mainLayout, "Permission is rejected. Go to setting and allow request manually ", Snackbar.LENGTH_INDEFINITE).setAction("확인", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -382,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GPS_ENABLE_REQUEST_CODE:
-                //사용자가 GPS 활성 시켰는지 검사
+                //Check if user activated GPS
                 if (checkLocationServicesStatus()) {
                     if (checkLocationServicesStatus()) {
                         Log.d(TAG, "onActivityResult : GPS Activated");
